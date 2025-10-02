@@ -19,35 +19,41 @@ SmartAgent Bot acts as a **unified interface for task automation**, using AI orc
 
 ## 🏗️ Architecture Overview
 
-User (Telegram)  
-│  
-├──► Voice or Text  
-│  
-├──► If Voice → Transcribe via Gemini  
-│  
-└──► Switch Node  
-    │  
-    ├──► If Image Request:  
-    │   ├── Gemini (Prompt Generation)  
-    │   ├── Gemini (Filename Generation)  
-    │   ├── Flux.1-Schnell (Image Generation)  
-    │   ├── Download + Send to Telegram  
-    │   └── Save in Google Drive + Google Sheets  
-    │  
-    └──► Else:  
-        ├── AI Orchestrator (Gemini 2.5 Flash)  
-        │   ├── Decides which agent to run:  
-        │   │  
-        │   ├── Email Agent  
-        │   ├── Calendar Agent  
-        │   ├── Stock Agent  
-        │   ├── Growth Agent  
-        │   └── Prompt Agent  
-        │  
-        ├── Extract Clear Info  
-        ├── Append to Google Sheet  
-        └── Send Telegram Message (or Email on failure)  
+### 1. Message Input
+- User sends either a **text** or **voice** message via Telegram.
+- If it's a **voice message**, it's transcribed to text using **Gemini**.
 
+### 2. Message Type Check (Switch Node)
+- The system checks if the user is requesting an image or not.
+
+---
+
+### 🖼️ If Image Generation is Requested:
+- Generate a prompt using **Gemini 2.5 Flash**.
+- Generate a filename using **Gemini 2.5 Flash**.
+- Generate the image using **Flux.1-Schnell** model.
+- Download the image.
+- Send the image to the user via Telegram.
+- Save the image to **Google Drive**.
+- Log the metadata in **Google Sheets**.
+
+---
+
+### 🤖 If Image Generation is Not Requested:
+- Query is passed to the **AI Orchestrator** (Gemini 2.5 Flash).
+- Orchestrator intelligently chooses the correct agent:
+  - 📧 **Email Agent**
+  - 📅 **Calendar Agent**
+  - 📈 **Stock Agent**
+  - 📊 **Growth Agent**
+  - ✍️ **Prompt Agent**
+  - Or falls back to **LLM** if no agent is relevant.
+
+- Once the task is processed:
+  - Extract clear information for the user.
+  - Append the data to **Google Sheets**.
+  - Send a reply via **Telegram**.
+  - If sending fails, send an **email notification** to you.
 
 ---
 
