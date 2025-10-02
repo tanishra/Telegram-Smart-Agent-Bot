@@ -17,7 +17,7 @@ SmartAgent Bot acts as a **unified interface for task automation**, using AI orc
 
 ---
 
-## workflow
+## 🔄 Workflow
 
 ![n8n Workflow](./assets/n8n-workflow.png)
 
