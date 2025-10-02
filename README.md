@@ -19,35 +19,35 @@ SmartAgent Bot acts as a **unified interface for task automation**, using AI orc
 
 ## 🏗️ Architecture Overview
 
-```mermaid
-flowchart TD
-    A[User on Telegram] --> B{Message Type}
-    B -->|Text| C[Go to Switch Node]
-    B -->|Voice| D[Transcribe via Gemini]
-    D --> C
+User (Telegram)  
+│  
+├──► Voice or Text  
+│  
+├──► If Voice → Transcribe via Gemini  
+│  
+└──► Switch Node  
+    │  
+    ├──► If Image Request:  
+    │   ├── Gemini (Prompt Generation)  
+    │   ├── Gemini (Filename Generation)  
+    │   ├── Flux.1-Schnell (Image Generation)  
+    │   ├── Download + Send to Telegram  
+    │   └── Save in Google Drive + Google Sheets  
+    │  
+    └──► Else:  
+        ├── AI Orchestrator (Gemini 2.5 Flash)  
+        │   ├── Decides which agent to run:  
+        │   │  
+        │   ├── Email Agent  
+        │   ├── Calendar Agent  
+        │   ├── Stock Agent  
+        │   ├── Growth Agent  
+        │   └── Prompt Agent  
+        │  
+        ├── Extract Clear Info  
+        ├── Append to Google Sheet  
+        └── Send Telegram Message (or Email on failure)  
 
-    C -->|Image Request| E[Prompt Generation (Gemini)]
-    E --> F[Filename Generation (Gemini)]
-    F --> G[Image Generation (Flux.1-Schnell)]
-    G --> H[Download Image]
-    H --> I[Send to Telegram]
-    H --> J[Save to Google Drive]
-    H --> K[Log in Google Sheets]
-
-    C -->|Not Image| L[AI Orchestrator (Gemini 2.5 Flash)]
-    L --> M{Route to Agent?}
-    M -->|Email| N[Email Agent]
-    M -->|Calendar| O[Calendar Agent]
-    M -->|Stock| P[Stock Agent]
-    M -->|Growth| Q[Growth Agent]
-    M -->|Prompt| R[Prompt Agent]
-    M -->|No Agent Match| S[Fallback to LLM]
-
-    L --> T[Extract Clear Info]
-    T --> U[Append to Google Sheet]
-    U --> V[Send to Telegram]
-    V -->|Fails| W[Send Error Email to You]
-```
 
 ---
 
