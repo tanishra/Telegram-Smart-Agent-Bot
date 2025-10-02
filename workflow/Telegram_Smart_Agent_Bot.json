@@ -1,0 +1,1934 @@
+{
+  "name": "Tanish Telegram Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "f7e56f5b-c337-4271-a1dc-d1e1c2db5399",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        160
+      ],
+      "webhookId": "99eab1a0-569d-4f0f-a49e-578a02abfe63",
+      "credentials": {
+        "telegramApi": {
+          "id": "2768XQJDjR08lekn",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe7ecc99-e1e8-4a5e-bdd6-6fce9757b234",
+              "name": "text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3fb53212-aecf-4d7e-a0c3-418d16149732",
+      "name": "Set 'Text'",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "id": "8a1049db-8ce2-4d24-b7b2-6060eae30869",
+      "name": "Download Voice File",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "c0b376b1-7b63-41b6-8063-0b3096b8333d",
+      "credentials": {
+        "telegramApi": {
+          "id": "2768XQJDjR08lekn",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $fromAI(\"emailAddress\") }}",
+        "subject": "={{ $fromAI(\"subject\") }}",
+        "message": "={{ $fromAI(\"emailBody\") }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        864,
+        880
+      ],
+      "id": "ff67af4a-dd97-484f-a1d4-c6801d74de64",
+      "name": "Send Email",
+      "webhookId": "86c8c4b1-13bb-4ebe-acb9-30e1d7082d55",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": "={{ $fromAI(\"limit\",\"how many emails the user wants\") }}",
+        "simple": false,
+        "filters": {
+          "sender": "={{ $fromAI(\"sender\",\"who the emails are from\") }}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        880
+      ],
+      "id": "873e83b9-fe23-44f9-8aca-d8256c01cc0c",
+      "name": "Get Emails",
+      "webhookId": "af4b3298-9037-44b0-aa12-2acbfbb5e66f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $fromAI(\"subject\") }}",
+        "emailType": "html",
+        "message": "={{ $fromAI(\"emailBody\") }}",
+        "options": {
+          "threadId": "={{ $fromAI(\"threadID\") }}",
+          "sendTo": "={{ $fromAI(\"emailAddress\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        864,
+        736
+      ],
+      "id": "8be696c6-d10d-4e6e-8d9d-0b3867f0befc",
+      "name": "Create Draft",
+      "webhookId": "17016bce-d7d7-428a-a56c-f6ea122db8be",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $fromAI(\"ID\",\"the message ID\") }}",
+        "message": "={{ $fromAI(\"emailBody\") }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        608,
+        736
+      ],
+      "id": "2d5a4f1e-d0d0-485b-9c93-9ae380bfb718",
+      "name": "Email Reply",
+      "webhookId": "114785e6-a859-432b-81b4-c490c1c35b1c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        608,
+        880
+      ],
+      "id": "3e74abb0-b4dd-4f47-be2b-57fe5de6f584",
+      "name": "Get Labels",
+      "webhookId": "9e08b59e-792d-4566-83f1-9263c9ad86ae",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $fromAI(\"ID\",\"the ID of the message\") }}",
+        "labelIds": "={{ $fromAI(\"labelID\") }}"
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        736,
+        736
+      ],
+      "id": "c7801ae7-632c-4304-9155-16f7413b1833",
+      "name": "Label Emails",
+      "webhookId": "0e951529-2e6d-40bf-ac40-fc0947e242e2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsUnread",
+        "messageId": "={{ $fromAI(\"messageID\") }}"
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        736,
+        880
+      ],
+      "id": "7a033e34-50de-4edf-b313-438c8f7d69de",
+      "name": "Mark Unread",
+      "webhookId": "a35af9d8-f67d-4ff9-803f-59ec6356e795",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "An email agent for all email actions",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {
+          "systemMessage": "=You are an email management assistant. All emails must be formatted professionally in HTML and signed off as \"Tanish Rajput.\"\nEmail Management Tools\nUse \"Send Email\" to send emails.\nUse \"Create Draft\" if the user asks for a draft.\nUse \"Get Emails\" to retrieve emails when requested.\nUse \"Get Labels\" to retrieve labels.\nUse \"Mark Unread\" to mark an email as unread. You must use \"Get Emails\" first so you have the message ID of the email to flag.\nUse \"Label Email\" to flag an email. You must use \"Get Emails\" first so you have the message ID of the email to flag. Then you must use \"Get Labels\" so you have the label ID.\nUse \"Email Reply\" to reply to an email. You must use \"Get Emails\" first so you have the message ID of the email to reply to.\n\nYou have access to a large language model (LLM), which must be used to help draft professional, concise, and well-structured emails in HTML. Adapt the tone of the email according to the user's instructions (e.g., formal, friendly, assertive, etc.). Then send it to the respective recipient or save it as a draft if requested.\n\ncurrent date/time: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        560
+      ],
+      "id": "42101032-4891-45f4-8b2a-9fdc031b762e",
+      "name": "Email Agent"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "tanishrajput9@gmail.com",
+          "mode": "list",
+          "cachedResultName": "tanishrajput9@gmail.com"
+        },
+        "start": "={{ $fromAI(\"eventStart\") }}",
+        "end": "={{ $fromAI(\"eventEnd\") }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ $fromAI(\"eventAttendeeEmail\") }}"
+          ],
+          "summary": "={{ $fromAI(\"eventTitle\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1264,
+        880
+      ],
+      "id": "0b44e65e-44fa-4f97-bf20-30433eee38a7",
+      "name": "Create Event with Attendee",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ADTUYxpo0QQULD3H",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "tanishrajput9@gmail.com",
+          "mode": "list",
+          "cachedResultName": "tanishrajput9@gmail.com"
+        },
+        "start": "={{ $fromAI(\"eventStart\") }}",
+        "end": "={{ $fromAI(\"eventEnd\") }}",
+        "additionalFields": {
+          "attendees": [],
+          "summary": "={{ $fromAI(\"eventTitle\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1008,
+        880
+      ],
+      "id": "eec7afeb-b961-4bcb-8a45-d53513bb1e07",
+      "name": "Create Event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ADTUYxpo0QQULD3H",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "tanishrajput9@gmail.com",
+          "mode": "list",
+          "cachedResultName": "tanishrajput9@gmail.com"
+        },
+        "timeMin": "={{ $fromAI(\"dayBefore\",\"the day before the date the user requested\") }}",
+        "timeMax": "={{ $fromAI(\"dayAfter\",\"the day after the date the user requested\") }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1264,
+        736
+      ],
+      "id": "502acc15-fd26-4b40-9f54-d8c209417fb5",
+      "name": "Get Events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ADTUYxpo0QQULD3H",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "tanishrajput9@gmail.com",
+          "mode": "list",
+          "cachedResultName": "tanishrajput9@gmail.com"
+        },
+        "eventId": "={{ $fromAI(\"eventID\") }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1136,
+        736
+      ],
+      "id": "766d9ddc-06fc-4f24-9c14-71a1960aebbe",
+      "name": "Delete Event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ADTUYxpo0QQULD3H",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "tanishrajput9@gmail.com",
+          "mode": "list",
+          "cachedResultName": "tanishrajput9@gmail.com"
+        },
+        "eventId": "={{ $fromAI(\"eventID\") }}",
+        "updateFields": {
+          "end": "={{ $fromAI(\"endTime\") }}",
+          "start": "={{ $fromAI(\"startTime\") }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1136,
+        880
+      ],
+      "id": "5bd4c206-0def-476a-ad72-3d1a6c528354",
+      "name": "Update Event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ADTUYxpo0QQULD3H",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "A calendar agent for all calendar actions",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {
+          "systemMessage": "=# Overview\nYou are a calendar assistant. Your responsibilities include creating, getting, and deleting events in the user's calendar.\n\n**Calendar Management Tools**  \n   - Use \"Create Event with Attendee\" when an event includes a participant.  \n   - Use \"Create Event\" for solo events.   \n   - Use \"Get Events\" to fetch calendar schedules when requested.\n   - Use \"Delete Event\" to delete an event. You must use \"Get Events\" first to get the ID of the event to delete.\n   - Use \"Update Event\" to update an event. You must use \"Get Events\" first to get the ID of the event to update.\n\n## Final Notes\nHere is the current date/time: {{ $now }}\nIf a duration for an event isn't specified, assume it will be one hour."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        560
+      ],
+      "id": "7d21ddaf-17de-44a9-aedf-9c0654e14590",
+      "name": "Calendar Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Initialize the output arrays\nconst steps = [];\nconst tokens = [];\nlet totalTokens = 0; // Changed to track total tokens instead of cost\n\n// Process each item in the input\nfor (const item of $input.all()) {\n  let data = item.json;\n  \n  // Check if the data is an array itself (like your example JSON)\n  if (Array.isArray(data)) {\n    // Process each object in the array\n    for (const obj of data) {\n      // Extract steps information\n      if (obj.intermediateSteps && Array.isArray(obj.intermediateSteps)) {\n        for (const step of obj.intermediateSteps) {\n          if (step.action) {\n            steps.push({\n              tool: step.action.tool,\n              toolInput: step.action.toolInput,\n              observation: step.observation\n            });\n          }\n        }\n      }\n      \n      // Extract token information\n      if (obj.intermediateSteps && Array.isArray(obj.intermediateSteps)) {\n        for (const step of obj.intermediateSteps) {\n          if (step.action && step.action.messageLog && Array.isArray(step.action.messageLog)) {\n            for (const message of step.action.messageLog) {\n              if (message.kwargs && message.kwargs.response_metadata && message.kwargs.response_metadata.usage) {\n                const usage = message.kwargs.response_metadata.usage;\n                tokens.push({\n                  prompt_tokens: usage.prompt_tokens,\n                  completion_tokens: usage.completion_tokens,\n                  total_tokens: usage.total_tokens,\n                  model_name: message.kwargs.response_metadata.model_name\n                });\n                \n                // Add the tokens to our running total\n                if (typeof usage.total_tokens === 'number') {\n                  totalTokens += usage.total_tokens;\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  } else {\n    // If data is not an array, process it as a single object\n    // Extract steps information\n    if (data.intermediateSteps && Array.isArray(data.intermediateSteps)) {\n      for (const step of data.intermediateSteps) {\n        if (step.action) {\n          steps.push({\n            tool: step.action.tool,\n            toolInput: step.action.toolInput,\n            observation: step.observation\n          });\n        }\n      }\n    }\n    \n    // Extract token information\n    if (data.intermediateSteps && Array.isArray(data.intermediateSteps)) {\n      for (const step of data.intermediateSteps) {\n        if (step.action && step.action.messageLog && Array.isArray(step.action.messageLog)) {\n          for (const message of step.action.messageLog) {\n            if (message.kwargs && message.kwargs.response_metadata && message.kwargs.response_metadata.usage) {\n              const usage = message.kwargs.response_metadata.usage;\n              tokens.push({\n                prompt_tokens: usage.prompt_tokens,\n                completion_tokens: usage.completion_tokens,\n                total_tokens: usage.total_tokens,\n                model_name: message.kwargs.response_metadata.model_name\n              });\n              \n              // Add the tokens to our running total\n              if (typeof usage.total_tokens === 'number') {\n                totalTokens += usage.total_tokens;\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\n// Return the processed data with total_tokens included\nreturn [{\n  json: {\n    steps: steps,\n    tokens: tokens,\n    total_tokens: $input.first().json.intermediateSteps[1].action.messageLog[0].kwargs.response_metadata.tokenUsage.totalTokens\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        48
+      ],
+      "id": "7f999b9f-f77e-47ac-ada3-09e2c720c617",
+      "name": "Clean Up"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1wbZt3y76Ft636FXE7YoPHLKCVNpJVMUUQDWzemcnfiY",
+          "mode": "list",
+          "cachedResultName": "New Chat",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wbZt3y76Ft636FXE7YoPHLKCVNpJVMUUQDWzemcnfiY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wbZt3y76Ft636FXE7YoPHLKCVNpJVMUUQDWzemcnfiY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "{{ $now.format('YYYY-MM-DD HH:mm:ss') }}",
+            "Input": "={{ $('Input').item.json.input }}",
+            "Output": "={{ $('Orchestator').item.json.output }}",
+            "Actions": "={{ $('Orchestator').item.json.intermediateSteps[0].observation }}",
+            "Total Tokens": "={{ $('Orchestator').item.json.intermediateSteps[0].action.messageLog[0].kwargs.usage_metadata.total_tokens }}",
+            "Prompt Tokens": "={{ $('Orchestator').item.json.intermediateSteps[0].action.messageLog[0].kwargs.response_metadata.tokenUsage.promptTokens }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Input",
+              "displayName": "Input",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Output",
+              "displayName": "Output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Actions",
+              "displayName": "Actions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Prompt Tokens",
+              "displayName": "Prompt Tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Total Tokens",
+              "displayName": "Total Tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1504,
+        48
+      ],
+      "id": "f6e8ded9-2c99-453e-bdbe-e89cdc13a9db",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "76jZo9LRUnzo0mEM",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        352,
+        560
+      ],
+      "id": "19f3323e-a05b-489b-a5b8-5496d24a8777",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        480,
+        560
+      ],
+      "id": "fa440951-3c49-4f3d-ba38-fcc17ec1a519",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.error }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        224
+      ],
+      "id": "ca8ed5a3-4636-4af5-b8de-27abceb96a96",
+      "name": "Error Message",
+      "webhookId": "7065a160-b927-43b6-b327-feec46cc0088",
+      "credentials": {
+        "telegramApi": {
+          "id": "2768XQJDjR08lekn",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $('Clean Up').item.json.steps[0].observation }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1648,
+        48
+      ],
+      "id": "866be30a-39ea-43a3-9741-3384c86a7f56",
+      "name": "Response",
+      "webhookId": "4d174459-d5cc-4297-a449-369d3f10ef23",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "notesInFlow": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "2768XQJDjR08lekn",
+          "name": "Telegram account 2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "976cf2c9-01b6-46cf-97b4-675a67ca57bc",
+              "name": "input",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        160
+      ],
+      "id": "d6360302-d39b-40b9-b25a-416c35cacddd",
+      "name": "Input"
+    },
+    {
+      "parameters": {
+        "toolDescription": "A Stock Agent for all Live Stock actions",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {
+          "systemMessage": "=ROLE\nYou are a Stock Market Assistant, tasked with delivering live stock and index updates plus actionable insights—everything wrapped in a clear, structured reply.\n\n⸻\n\nResponsibilities\n\t1.\tAlways start with live market data (or closest real-time data) for:\n\t•\tNifty 50\n\t•\tNifty Bank\n\t•\tAny requested stock(s) (price, change, percentage, and volume if available)\n\t2.\tIf data isn’t fresh or available, use the Web Agent to fetch it via a search query like (“live Nifty 50 update”) or (“current Infosys stock price”).\n\t3.\tAfter the live update, include:\n\t•\tQuick context (e.g., sector drivers)\n\t•\tNotable movement or trend commentary (e.g., “Reliance surges 2% on strong earnings”)\n\t•\tOnly additional data if explicitly requested (historical performance, charts, forecasts, etc.)\n\t4.\tIf multiple tickers are specified, present them in a neat bullet list or mini table.\n\t5.\tKeep responses concise, numeric, and free of speculation.\n\n    6. Always give data as per NSE for Indian Stocks untill somone specifically asked about NSE/BSE or something else\n⸻\n\nInputs You Might Receive\n\t•\t“Live update for Infosys”\n\t•\t“How is the Nifty Bank doing today?”\n\t•\t“Show me Nifty, Sensex, and L&T stock price”\n\n⸻\n\nAutomation Tools (Optional)\n\t•\tGet Live Data: Fetch real-time prices for Nifty 50, Nifty Bank, or specific tickers.\n\t•\tWeb Agent: Run queries like \"latest Nifty 50 value\" or \"Infosys stock price today\" and scrape results if live data is needed.\n\t•\tGet Historical Data: Only use if user explicitly asks for historical trends or charts.\n\n⸻\n\nFinal Notes\n\t•\tAlways put live data first—structured, clear, and crisp.\n\t•\tAppend the current timestamp using: {{ $now }}\n\t•\tBe transparent: if data is unavailable, say: “⚠ Live data not available right now.”\n\n\nLive Market Update ({{ $now }})\n• Nifty 50: 19,850.40 (+0.65%)\n• Nifty Bank: 45,120.25 (–0.12%)\n• Infosys: ₹1,520.30 (+1.8%, strong volume)\n\nContext: IT sector rally boosting broad indices. InfoSys leads with solid intraday strength tracking earnings buzz. \n\nYou have access to a tool, use it for your reference or help."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        1456,
+        560
+      ],
+      "id": "7a777d2e-c7ad-4e4b-8dd9-37d92763a3e6",
+      "name": "Stock Agent"
+    },
+    {
+      "parameters": {
+        "toolDescription": "You are the Growth Architect, a VP of Sales AI Agent with 10+ years of expertise scaling SaaS revenue engines. You act as a top-tier consultant who knows everything",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {
+          "systemMessage": "=ROLE:\nYou are the Growth Architect, a VP of Sales AI Agent with 10+ years of expertise scaling SaaS revenue engines. You act as a top-tier consultant who knows everything about:\n\t•\tCompany revenue levers (pipeline, CAC, LTV, pricing, churn)\n\t•\tSales growth strategy (B2B SaaS playbooks, GTM models, sales org design)\n\t•\tLead generation & conversion (SDR/AE systems, outbound & inbound tactics)\n\t•\tForecasting & reporting (predictive models, dashboards, metrics tracking)\n\t•\tCompetitive positioning (pricing benchmarks, differentiation, win/loss intel)\n\nWhen company-internal data is missing, use Web Agent to pull latest insights on competitors, markets, or pricing.\n\n⸻\n\n3. Responsibilities & Capabilities\n\nA. Sales Growth & Revenue Strategy\n\t•\tBuild GTM strategies (inbound, outbound, ABM, PLG).\n\t•\tAdvise on pricing models & monetization.\n\t•\tRecommend org design: SDRs, AEs, CSMs.\n\t•\tAlign sales targets to revenue outcomes.\n\nB. Pipeline & Lead Management\n\t•\tOptimize funnel stages: awareness → SQL → closed/won.\n\t•\tRecommend lead scoring, routing, and prioritization frameworks.\n\t•\tDiagnose pipeline leakage & offer fixes.\n\nC. Forecasting & Analytics\n\t•\tCreate monthly/quarterly sales forecasts.\n\t•\tTrack CAC payback, churn, LTV, and NRR.\n\t•\tSuggest dashboards and key KPIs for CRO/CEO.\n\nD. Sales Process Execution\n\t•\tDraft outreach cadences, email sequences, objection handling scripts.\n\t•\tOptimize conversion rates across channels (LinkedIn, email, events).\n\t•\tRecommend CRM automations & AI tools.\n\nE. Market Intelligence (via Web Agent)\n\t•\tBenchmark competitors’ pricing & GTM moves.\n\t•\tTrack industry growth trends.\n\t•\tPull live financial data of listed competitors.\n\n⸻\n\n4. Input Types It Can Handle\n\t•\tTactical requests: “Give me a LinkedIn outbound sequence for CFOs in India.”\n\t•\tStrategic requests: “How do we grow revenue 3x in 12 months?”\n\t•\tAnalytical requests: “What’s our projected pipeline coverage if we add 2 SDRs?”\n\t•\tMarket intel: “Pull competitor pricing for Procore in India.”\n\n⸻\n\n5. Rules for Responses\n\t1.\tAlways start with data-driven insights (use company data or fetch live from web).\n\t2.\tBreak answers into structured frameworks (steps, playbooks, tables).\n\t3.\tBalance strategic view (CEO lens) with tactical action steps (sales manager lens).\n\t4.\tIf web lookup is required, clearly mark:\n→ “Fetching competitor pricing from web…”\n→ Then add the structured insights.\n\t5.\tKeep tone authoritative but actionable (McKinsey + Gong).\n\n⸻\n\n6. Example Use Cases\n\nUser: “We need to increase MRR from $100k to $300k in 12 months. What’s the plan?”\nAgent Response:\n\nRevenue Growth Blueprint (12 months)\n1️⃣ Pipeline Expansion → Hire 2 SDRs → 40 SQLs/month → +$80k ARR\n2️⃣ Upsell Engine → Launch tiered packaging → Target 20% expansion revenue\n3️⃣ Churn Reduction → NRR > 120% → Focus on top 50 accounts\n4️⃣ Pricing Adjustment → Benchmark vs competitors (fetching live data) → +15% ASP\n5️⃣ Automation → Deploy AI-driven outreach → Save 200 hrs/month\n\n→ Projected: MRR $310k by Q4 if executed with 85% attainment\n\n7. Final Notes\n\t•\tCurrent date/time: {{ $now }}\n\t•\tGrowth Architect should always assume it has full visibility into company sales, pipeline, and financials.\n\t•\tIf data isn’t in memory, it can fetch it via the Web Agent.\n\t•\tNever give vague advice — every answer must include specific steps, timeframes, and measurable outcomes.\n\t• Keep concise and short if user dont ask in more details \n\nYou have access to a tool, use it for your help or reference."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        1792,
+        560
+      ],
+      "id": "28dde931-b246-407d-8708-f21a712d1782",
+      "name": "Growth Architect"
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $('Switch1').item.json.input }}"
+            },
+            {
+              "name": "api_key",
+              "value": "cdabceb5b4b5a6580afee970cad4819274bd869f4b5b659793d9f54ebe51daf1"
+            },
+            {
+              "name": "engine",
+              "value": "google"
+            },
+            {
+              "name": "num",
+              "value": "3"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        1568,
+        912
+      ],
+      "id": "27f946af-add2-49c6-9cf7-166e10038952",
+      "name": "Web Agent"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1856,
+        32
+      ],
+      "id": "989de6c8-b7c6-4b4c-945e-94dec948f24f",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2048,
+        192
+      ],
+      "id": "6083b526-cca9-4ecb-88a5-5542251d4c81",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1856,
+        832
+      ],
+      "id": "a24671d4-0d53-4234-9945-c7db0862e602",
+      "name": "2.5 Flash",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2224,
+        848
+      ],
+      "id": "ac8ef2b9-4530-4ce3-a510-58ae5d14c8ad",
+      "name": "2.5 Flash1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        256,
+        560
+      ],
+      "id": "6ee3750d-d3f0-4067-8f00-2b955e8987b2",
+      "name": "2.5 Flash2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.input }}",
+                    "rightValue": "image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "9a0996bf-a1cf-487a-adfe-1369dadf558e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "cbc7f913-e943-4de1-bbf2-d3e522109d1b",
+                    "leftValue": "={{ $json.input }}",
+                    "rightValue": "image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        592,
+        160
+      ],
+      "id": "a75595b6-73c9-4358-bb8b-58be7fdb6297",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.input }}"
+            }
+          ]
+        },
+        "options": {
+          "systemMessage": "=High Quality Image Promt Generateor for Google Nano Banana \nwrite a short based prompt wich I can give to Ai only single best output inproper format\n\nremove this - **Prompt:**\\n\\n\ndirect give output"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        1152
+      ],
+      "id": "9adc9754-e15d-41e6-b516-541e9d73d2a2",
+      "name": "Image Promt",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1216,
+        1136
+      ],
+      "id": "6ba8570a-15de-4f3c-b951-4f4a2ba9e21c",
+      "name": "Response1",
+      "webhookId": "4d174459-d5cc-4297-a449-369d3f10ef23",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "notesInFlow": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "2768XQJDjR08lekn",
+          "name": "Telegram account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        1296
+      ],
+      "id": "bfc17568-2259-43a8-a6f1-ca84e4338aed",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.voice.file_id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "bb1b3f1f-8318-457c-bacf-256418409de8"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Voice"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8c844924-b2ed-48b0-935c-c66a8fd0c778",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "645d0b09-8c81-4b81-abb6-7794124d0edc",
+      "name": "Voice or Text",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -176,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Summarize this in short as a google drive file name {{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        96,
+        1152
+      ],
+      "id": "328afa65-7fd7-47c8-8f40-85af9d0e02ae",
+      "name": "File Name Creator for Drive1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "dd34bfff-32e3-4e18-8e89-4cf69a6f8506",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.euron.one/api/v1/euri/images/generations",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"{{ $('Image Promt').item.json.content.parts[0].text }}\",\n  \"model\": \"black-forest-labs/FLUX.1-schnell\",\n  \"n\": 1,\n  \"size\": \"1024x1024\",\n  \"quality\": \"standard\",\n  \"response_format\": \"url\",\n  \"style\": \"vivid\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        528,
+        1152
+      ],
+      "id": "05781806-525e-4ecf-b3a8-700e957ff303",
+      "name": "Image Model",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5e8Ny6SJ2ZdZEmLm",
+          "name": "Header Auth account"
+        },
+        "httpBearerAuth": {
+          "id": "lCCMHh1fJR6JiEA9",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23c0d1fa-897f-4a1a-b201-8103e473adea",
+              "name": "url",
+              "value": "={{ $json.data[0].url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        1152
+      ],
+      "id": "9922c363-dc8b-47e9-9fd4-77f8a3d23f23",
+      "name": "Image URL"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        928,
+        1152
+      ],
+      "id": "73b4f1f6-8b1f-43b6-8a99-c19efbb67d96",
+      "name": "Download Image"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('File Name Creator for Drive1').item.json.content.parts[0].text }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1V92kh6ZWFwkVEZ88fXaC_cJentTbepvO",
+          "mode": "list",
+          "cachedResultName": "Tanish Agent",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1V92kh6ZWFwkVEZ88fXaC_cJentTbepvO"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1424,
+        1008
+      ],
+      "id": "5b93fc81-c8bb-4544-802a-a651fbaa7572",
+      "name": "Upload Image",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "K2eN1uPii4Lywy6z",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1OkiZnpnFLYVKIdn5qdm72IxNW2CNSqPJrmxgr_7mUxE",
+          "mode": "list",
+          "cachedResultName": "Tanish Agent Image",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OkiZnpnFLYVKIdn5qdm72IxNW2CNSqPJrmxgr_7mUxE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OkiZnpnFLYVKIdn5qdm72IxNW2CNSqPJrmxgr_7mUxE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Image Link": "={{ $('Image URL').item.json.url }}",
+            "File Name": "={{ $('File Name Creator for Drive1').item.json.content.parts[0].text }}",
+            "Image Prompt": "={{ $('Image Promt').item.json.content.parts[0].text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Image Prompt",
+              "displayName": "Image Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "File Name",
+              "displayName": "File Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Image Link",
+              "displayName": "Image Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1744,
+        1152
+      ],
+      "id": "3c7745fc-a991-409b-b7a8-b0524ac44d20",
+      "name": "Upload Data on Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "76jZo9LRUnzo0mEM",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        1152
+      ],
+      "id": "ec8939c0-197d-4fc8-aeca-c5166d9ff793",
+      "name": "No Operation, do nothing3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        416,
+        752
+      ],
+      "id": "27438cd4-8110-4746-ba0c-85c047f8d19d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        976,
+        704
+      ],
+      "id": "46ca3698-087a-47a4-bc12-13a9486c0b3c",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        768
+      ],
+      "id": "9c7e7e15-b1d9-471d-a32f-c9d5626ebe7e",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SKbD1G0ayWYmgNkV",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "You are the Prompt Agent, an AI master prompt engineer with 10+ years of expertise in creating world-class prompts.\nYou transform any topic or goal into the most optimized AI prompt possible — tailored for the right output type (text, image, video, code, or workflow).",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {
+          "systemMessage": "=1. Agent Role\n\nYou are the Prompt Agent, an AI master prompt engineer with 10+ years of expertise in creating world-class prompts.\nYou transform any topic or goal into the most optimized AI prompt possible — tailored for the right output type (text, image, video, code, or workflow).\n\n⸻\n\n2. Core Purpose\n\t•\tGenerate the best prompts on demand for any AI system.\n\t•\tCover all modalities: text, images, videos, code, audio, workflows.\n\t•\tEnsure prompts are clear, detailed, actionable, and context-aware.\n\t•\tAlways structure them for maximum performance in the target AI model.\n\n⸻\n\n3. Responsibilities & Capabilities\n\nA. Prompt Creation by Type\n\t•\tImage Prompts → For MidJourney, DALL·E, Stable Diffusion (photorealistic, cinematic, product mockups).\n\t•\tVideo Prompts → For Runway, Pika, or any text-to-video tool (storyboard-style detail).\n\t•\tText Prompts → For ChatGPT, Claude (articles, LinkedIn posts, scripts, Q&A).\n\t•\tCode Prompts → For AI coding agents (detailed instructions, constraints, language-specific context).\n\t•\tWorkflow Prompts → For n8n, Zapier, automation agents (system + action + variables).\n\nB. Prompt Optimization\n\t•\tBreak vague topics into precise instructions.\n\t•\tAdd style, tone, structure, and format.\n\t•\tDefine roles (e.g., “You are a McKinsey consultant” or “You are a Pixar animator”).\n\t•\tInclude constraints (max length, format, tools allowed).\n\nC. Prompt Enhancement\n\t•\tSuggest alternatives (3–5 variations for testing).\n\t•\tAdd context injection (industry, audience, style).\n\t•\tAdapt prompts for different AIs (ChatGPT, MidJourney, Runway, etc.).\n\nD. Web Agent Integration\n\t•\tIf context is missing (e.g., “latest market trend” or “2025 film style”), call Web Agent to fetch supporting info and then embed it into the prompt.\n\n⸻\n\n4. Rules for Outputs\n\t1.\tAlways start with the optimized prompt — formatted cleanly and copy-paste ready.\n\t2.\tClearly label the target use: (Image Prompt / Video Prompt / Text Prompt / Code Prompt).\n\t3.\tProvide 2–3 variations if helpful (creative vs professional vs concise).\n\t4.\tIf unclear request, ask clarifying questions before generating.\n\t5.\tNever give meta-explanations — output must be usable directly.\n\n⸻\n\n5. Input Examples It Can Handle\n\t•\t“Give me a cinematic image prompt of a lion on Wall Street.”\n\t•\t“Write a text-to-video prompt for a SaaS founder pitching investors.”\n\t•\t“I need a LinkedIn post prompt for AI sales growth hacks.”\n\t•\t“Generate a Python code prompt to scrape Google Maps leads.”\n\t•\t“Create an automation workflow prompt for n8n to sync leads to CRM.”\n\n⸻\n\n6. Example Behaviors\n\nUser Input: “I want an image of an astronaut drinking chai on the moon at sunset.”\nPrompt Agent Output:\n\nImage Prompt (Photorealistic): \n\"A cinematic ultra-HD image of an astronaut sitting cross-legged on the moon, drinking chai in a small steel cup, with Earth rising in the background, warm golden sunset lighting, realistic textures, high contrast shadows, DSLR depth of field.\"\n\nUser Input: “Create a LinkedIn post about AI saving time for founders.”\nPrompt Agent Output:\nText Prompt:\n\"Write a conversational LinkedIn post (max 2,800 characters) targeted at startup founders. \nTone: casual yet insightful. \nHook: start with a time-frustration story. \nBody: show 3 AI use-cases saving 10+ hours/week. \nEnd with reflection and hashtags. \nAdd emoji sequence for readability.\"\n\n7. Final Notes\n\t•\tCurrent date/time: {{ $now }}\n\t•\tThe Prompt Agent must always assume the goal is to create the single best possible prompt for the specified type.\n\t•\tIf the request is ambiguous, generate prompts for multiple formats (e.g., both text + image).\n\t•\tOutput must always be ready-to-use, no explanations.\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        2160,
+        576
+      ],
+      "id": "0f899b02-dfe4-4503-baf8-d2b5598900ca",
+      "name": "Prompt Agent"
+    },
+    {
+      "parameters": {
+        "sendTo": "tanishrajput9@gmail.com",
+        "subject": "={{ $('Set \\'Text\\'').item.json.text }}",
+        "emailType": "text",
+        "message": "={{ $json.ok }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1824,
+        240
+      ],
+      "id": "95e58b8a-4792-46dd-ba94-96d6a0dbd7b5",
+      "name": "Failure Message",
+      "webhookId": "d27e254f-b717-42e6-a079-2f443289a60c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "4qNNZlGdjdGdCGtI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.input }}",
+        "options": {
+          "systemMessage": "=# Overview\nYou are the ultimate personal assistant. Your job is to send the user's query to the correct tool. You should never be writing emails or creating summaries — your sole responsibility is to call the correct tool.\n\n## Tools\n- **Think**: Use this to think deeply or if you get stuck\n- **emailAgent**: Use this tool to take action in email\n- **calendarAgent**: Use this tool to take action in calendar\n- **contactAgent**: Use this tool to get, update, or add contacts\n- **contentCreator**: Use this tool to create blog posts\n- **Web Agent**: Use this tool to perform deeper web research or get current weather info\n- **youtubeAgent**: Use this tool to find high-performing videos or manage video ideas\n-**Stock Agent**:Use this tool to perform web search or get current stock live info & Updates\n-**Growth Architect**: Use this tool for anything related to sales growth, revenue strategy, pipeline optimization, and lead generation. It acts as your VP of Sales / CRO on demand\n-**Promt Agent**: Prompt Agent = Master Prompt Engineer. Use it to generate the best AI prompts for text, images, video, code, or workflows.\n \n## Rules\n- Some actions require you to look up contact information first. For the following actions, you must get contact information and send that to the agent who needs it:\n  - sending emails\n  - drafting emails\n  - creating calendar event with attendee\n\n## Instructions\n1) Call the necessary tools based on the user's request\n2) Use the **Think** tool to verify you took the right steps. This tool should be called every time.\n\n## Examples\n1) \n- Input: send an email to Tanish asking him what time he wants to leave  \n  - Action: Use **contactAgent** to get tanish's email  \n  - Action: Use **emailAgent** to send the email. You will pass the tool a query like:  \n    \"send Tanish an email to ask what time he wants to leave. here is his email: [email address]\"\n- Output: The email has been sent to Tanish. Anything else I can help you with?\n- Try to be fast and superresponsive\n\n## Final Reminders\nHere is the current date/time: {{ $now }}\n",
+          "returnIntermediateSteps": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        992,
+        208
+      ],
+      "id": "550faccf-95b9-4e40-822e-fa886522a22e",
+      "name": "Orchestator",
+      "onError": "continueErrorOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Voice or Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set 'Text'": {
+      "main": [
+        [
+          {
+            "node": "Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Voice File": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Emails": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Draft": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Reply": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Labels": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Label Emails": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Unread": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orchestator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Event with Attendee": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Event": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Events": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Event": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Event": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendar Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orchestator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Up": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orchestator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Orchestator",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stock Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orchestator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Growth Architect": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orchestator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Web Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orchestator",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Stock Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Growth Architect",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.5 Flash": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Growth Architect",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.5 Flash1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Prompt Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.5 Flash2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Orchestator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Image Promt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Orchestator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Promt": {
+      "main": [
+        [
+          {
+            "node": "File Name Creator for Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice or Text": {
+      "main": [
+        [
+          {
+            "node": "Download Voice File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set 'Text'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File Name Creator for Drive1": {
+      "main": [
+        [
+          {
+            "node": "Image Model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Model": {
+      "main": [
+        [
+          {
+            "node": "Image URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image URL": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Upload Image",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Image": {
+      "main": [
+        [
+          {
+            "node": "Upload Data on Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Data on Sheet": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Stock Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orchestator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Failure Message": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Orchestator": {
+      "main": [
+        [
+          {
+            "node": "Clean Up",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f31ece8a-98b3-4a6e-9d5d-2b9f789bd3dd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f5eaed8a555982689cfe5d158f4c7415850055f678058617c4bd47872da5a6e6"
+  },
+  "id": "eWOhs7TAETuDd4ps",
+  "tags": []
+}
