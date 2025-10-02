@@ -21,6 +21,16 @@ SmartAgent Bot acts as a **unified interface for task automation**, using AI orc
 
 ![n8n Workflow](./assets/n8n%20workflow.png)
 
+---
+
+### 🔗 Try the Bot Live
+
+You can try SmartAgent Bot directly on Telegram:
+
+👉 [@tanishrajput26_bot](https://t.me/tanishrajput26_bot)
+
+---
+
 ## 🏗️ Architecture Overview
 
 ### 1. Message Input
