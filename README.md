@@ -41,12 +41,12 @@ flowchart TD
     M -->|Stock| P[Stock Agent]
     M -->|Growth| Q[Growth Agent]
     M -->|Prompt| R[Prompt Agent]
-    M -->|No Agent| S[Fallback to LLM]
+    M -->|No Agent Match| S[Fallback to LLM]
 
-    L --> T[Extract Info]
+    L --> T[Extract Clear Info]
     T --> U[Append to Google Sheet]
     U --> V[Send to Telegram]
-    V -->|Fails| W[Send Error Email]
+    V -->|Fails| W[Send Error Email to You]
 ```
 
 ---
